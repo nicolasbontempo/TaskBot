@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
+using Lime.Messaging.Resources;
 using Lime.Protocol.Server;
 using Serilog;
 using Serilog.Core;
@@ -25,8 +27,9 @@ namespace TaskBot
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            Log.Logger = new LoggerConfiguration().WriteTo.Trace().CreateLogger();
-
+            Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+            Mapper.Initialize(cfg => cfg.CreateMap<Account, Contact>()
+                .ForMember(x => x.Name, opt => opt.MapFrom(y => y.FullName)));
             return Task.CompletedTask;
         }
     }
